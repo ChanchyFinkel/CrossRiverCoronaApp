@@ -16,29 +16,30 @@ namespace CoronaApp.Dal
 {
     public class LocationService : ILocationService
     {
-        ILocationRepository _LocationDal;
+        ILocationRepository _LocationRepository;
         private readonly IMapper _mapper;
-        public LocationService(ILocationRepository LocationDal, IMapper mapper)
+        public LocationService(ILocationRepository LocationRepository, IMapper mapper)
         {
-            _LocationDal = LocationDal;
+            _LocationRepository = LocationRepository;
             _mapper = mapper;
         }
         public async Task<List<Location>> getAllLocation()
         {
-            return await _LocationDal.getAllLocation();
+            return await _LocationRepository.getAllLocation();
         }
         public async Task<List<Location>> getLocationsByPatientId(string id)
         {
-            return await _LocationDal.getLocationsByPatientId(id);
+           return await _LocationRepository.getLocationsByPatientId(id);
+          
         }
         public async Task<List<Location>> getLocationsByCity(string city)
         {
-            return await _LocationDal.getLocationsByCity(city);
+            return await _LocationRepository.getLocationsByCity(city);
         }
         public async Task<int> addNewLocation(PostLocationDTO newLocation)
         {
             Location location = _mapper.Map<Location>(newLocation);
-            return await _LocationDal.addNewLocation(location);
+            return await _LocationRepository.addNewLocation(location);
         }
 
 
@@ -46,17 +47,22 @@ namespace CoronaApp.Dal
         {
             if(locationSearch.Age!=0 && locationSearch.StartDate != null && locationSearch.EndDate != null)
             {
-                return await _LocationDal.getLocationsByLocationSaerch(locationSearch);
+                return await _LocationRepository.getLocationsByLocationSaerch(locationSearch);
             }
             if (locationSearch.Age != 0)
             {
-                return await _LocationDal.getLocationsByAge(locationSearch);
+                return await _LocationRepository.getLocationsByAge(locationSearch);
             }
             if (locationSearch.StartDate != null && locationSearch.EndDate != null)
             {
-                return await _LocationDal.getLocationsBetweenDates(locationSearch);
+                return await _LocationRepository.getLocationsBetweenDates(locationSearch);
             }
             return null;
+        }
+
+        public async Task<bool> deleteLocation(int id)
+        {
+            return await _LocationRepository.deleteLocation(id);
         }
     }
 }

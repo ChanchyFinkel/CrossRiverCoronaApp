@@ -10,19 +10,23 @@ namespace CoronaApp.Services
 {
     public class PatientService : IPatientService
     {
-        IPatientRepository _PatientDal;
+        IPatientRepository _PatientRepository;
         private readonly IMapper _mapper;
 
-        public PatientService(IPatientRepository PatientDal,IMapper mapper)
+        public PatientService(IPatientRepository PatientRepository, IMapper mapper)
         {
-            _PatientDal = PatientDal;
+            _PatientRepository = PatientRepository;
             _mapper = mapper;
         }
         public async Task<string> addNewPatient(Patient newPatient)
         {
            // Patient patient = _mapper.Map<Patient>(newPatient);
-            return await _PatientDal.addNewPatient(newPatient);
+            return await _PatientRepository.addNewPatient(newPatient);
         }
 
+        public async Task<Patient> getPatientById(string id)
+        {
+            return await _PatientRepository.getPatientById(id);
+        }
     }
 }

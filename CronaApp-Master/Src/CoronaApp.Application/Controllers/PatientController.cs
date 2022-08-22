@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CoronaApp.Api.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "user")]
     [Route("api/[controller]")]
     [ApiController]
     public class PatientController : ControllerBase
@@ -24,7 +24,26 @@ namespace CoronaApp.Api.Controllers
             _PatientService = PatientService;
         }
 
+        [HttpGet("{patientId}")]
+        public async Task<ActionResult<Patient>> getPatientById(string patientId)
+        {
+            try
+            {
+                if (patientId == null)
+                    return StatusCode(400, "bad request");
+                Patient patient = await _PatientService.getPatientById(patientId);
+                if (patient == null)
+                {
+                    return StatusCode(204, "no content");
+                }
+                return Ok(patient);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
 
+        }
 
         // POST api/<PatientController>
         [HttpPost]

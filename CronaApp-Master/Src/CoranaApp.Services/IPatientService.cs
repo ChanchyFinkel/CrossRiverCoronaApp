@@ -10,7 +10,8 @@ namespace CoronaApp.Services
 {
     public interface IPatientService
     {
-         Task<string> addNewPatient(Patient newPatient);
+       public  Task<string> addNewPatient(Patient newPatient);
+       public Task<Patient> getPatientById(string id);
 
     }
 }

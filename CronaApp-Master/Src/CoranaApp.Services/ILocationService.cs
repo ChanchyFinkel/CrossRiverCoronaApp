@@ -18,7 +18,7 @@ namespace CoronaApp.Services
         public Task<List<Location>> getLocationsByCity(string city);
        // public Task<List<Location>> getAllLocationBetweenDates(LocationSearch dates);
         public Task<List<Location>> getLocationsByLocationSaerch(LocationSearch locationSearch);
-
+        Task<bool> deleteLocation(int id);
 
     }
 }

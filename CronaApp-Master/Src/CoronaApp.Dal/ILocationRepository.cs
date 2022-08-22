@@ -14,6 +14,7 @@ namespace CoronaApp.Dal
         Task<List<Location>> getLocationsByLocationSaerch(LocationSearch locationSearch);
         Task<List<Location>> getLocationsBetweenDates(LocationSearch locationSearch);
         Task<List<Location>> getLocationsByAge(LocationSearch locationSearch);
+        Task<bool> deleteLocation(int id);
 
 
     }

@@ -17,32 +17,37 @@ public class UserRepository : IUserRepository
     {
         using (var _CoronaAppDBContext = new CoronaAppDBContext())
         {
-            return await _CoronaAppDBContext.Users.Where(user => user.Name.Equals(name) && user.Password .Equals( password)).FirstOrDefaultAsync();
+
+            return await _CoronaAppDBContext.Users.FirstOrDefaultAsync(user => user.Name.Equals(name) && user.Password.Equals(password));
         }
     }
     public async Task<User> signUp(string name, string password)
     {
-        User user = new User();
-        User existingUser = await login(name, password);
+        // User existingUser = await _CoronaAppDBContext.Users.FirstOrDefaultAsync(user => user.Name.Equals(name)).FirstOrDefaultAsync();
         using (var _CoronaAppDBContext = new CoronaAppDBContext())
         {
-            if (existingUser == null)
+            bool existingUser = await _CoronaAppDBContext.Users.AnyAsync(user => user.Name.Equals(name));
+            if (existingUser)
             {
-                user.Name = name;
-                user.Password = password;
+                return null;
             }
             else
-                user = existingUser;
-            try
             {
-                await _CoronaAppDBContext.Users.AddAsync(user);
-                await _CoronaAppDBContext.SaveChangesAsync();
-                return user;
+                User user = new User();
+                user.Name = name;
+                user.Password = password;
+                try
+                {
+                    await _CoronaAppDBContext.Users.AddAsync(user);
+                    await _CoronaAppDBContext.SaveChangesAsync();
+                    return user;
+                }
+                catch (Exception)
+                {
+                    throw new DbUpdateException();
+                }
             }
-            catch (Exception)
-            {
-                throw new DbUpdateException ();
-            }
+
         }
     }
 }

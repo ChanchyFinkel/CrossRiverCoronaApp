@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Builder;
-using CoronaApp.Api;
 using Serilog;
 using CoronaApp.Dal.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +15,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using CoronaApp.Api.MiddleWare;
 
 //Add Services to the containe
 var builder = WebApplication.CreateBuilder(args);

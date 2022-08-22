@@ -7,140 +7,158 @@ using CoronaApp.Dal.Models;
 using CoronaApp.Services;
 using CoronaApp.Services.DTO;
 using Microsoft.AspNetCore.Authorization;
+//using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace CoronaApp.Api.Controllers
+namespace CoronaApp.Api.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+[Authorize(Roles = "user")]
+
+public class LocationController : ControllerBase
 {
-    [Authorize]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class LocationController : ControllerBase
+    ILocationService _LocationService;
+
+    public LocationController(ILocationService LocationService)
     {
-        ILocationService _LocationService;
+        _LocationService = LocationService;
+    }
 
-        public LocationController(ILocationService LocationService)
+    // GET:
+    [HttpGet]
+    public async Task<ActionResult<List<Location>>> getAllLocation()
+    {
+        try
         {
-            _LocationService = LocationService;
+            List<Location> locations = await _LocationService.getAllLocation();
+            if (locations == null)
+            {
+                return StatusCode(404, "not found");
+            }
+            if (!locations.Any())
+            {
+                return StatusCode(204, "no content");
+            }
+            return Ok(locations);
         }
-
-        // GET:
-        [HttpGet]
-        public async Task<ActionResult<List<Location>>> getAllLocation()
+        catch (Exception ex)
         {
-            try
-            {
-                List<Location> locations = await _LocationService.getAllLocation();
-                if (locations == null)
-                {
-                    return StatusCode(404, "not found");
-                }
-                if (!locations.Any())
-                {
-                    return StatusCode(204, "no content");
-                }
-                return Ok(locations);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return StatusCode(500, ex.Message);
         }
+    }
 
-        // GET:
-        [HttpGet("{id}")]
-        public async Task<ActionResult<List<Location>>> getLocationsByPatientId(string id)
+    // GET:
+    [HttpGet("{id}")]
+    public async Task<ActionResult<List<Location>>> getLocationsByPatientId(string id)
+    {
+        if (id == null)
+            return StatusCode(400, "bad request");
+        try
         {
-            if (id == null)
-                return StatusCode(400, "bad request");
-            try
+            List<Location> locations = await _LocationService.getLocationsByPatientId(id);
+          /*  if (!locations.Any())
             {
-                List<Location> locations = await _LocationService.getLocationsByPatientId(id);
-                if (locations == null)
-                {
-                    return StatusCode(404, "not found");
-                }
-                if (!locations.Any())
-                {
-                    return StatusCode(204, "no content");
-                }
-                return Ok(locations);
-            }
-            catch (Exception ex)
+               // Patient patient=await _PatientService.getPatientById(id);
+                if(patient == null)
+                    return StatusCode(204, "No Such Patient");
+            }*/
+            if (!locations.Any())
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(204, "no content");
             }
+            return Ok(locations);
         }
-
-        // GET:
-        [HttpGet("city")]
-        public async Task<ActionResult<List<Location>>> getLocationsByCity([FromQuery] string city)
+        catch (Exception ex)
         {
-            if (city == null)
-                return StatusCode(400, "bad request");
-            try
-            {
-                List<Location> locations = await _LocationService.getLocationsByCity(city);
-                if (locations == null)
-                {
-                    return StatusCode(404, "not found");
-                }
-                if (!locations.Any())
-                {
-                    return StatusCode(204, "no content");
-                }
-                return Ok(locations);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return StatusCode(500, ex.Message);
         }
+    }
 
-        // GET:
-        [HttpPost("filter")]
-        public async Task<ActionResult<List<Location>>> getLocationsByLocationSaerch([FromBody] LocationSearch locationSearch)
+    // GET:
+    [HttpGet("city")]
+    public async Task<ActionResult<List<Location>>> getLocationsByCity([FromQuery] string city)
+    {
+        if (city == null)
+            return StatusCode(400, "bad request");
+        try
         {
-            if (locationSearch == null)
-                return StatusCode(400, "bad request");
-            try
+            List<Location> locations = await _LocationService.getLocationsByCity(city);
+            if (locations == null)
             {
-                List<Location> locations = await _LocationService.getLocationsByLocationSaerch(locationSearch);
-
-                if (locations == null)
-                {
-                    return StatusCode(404, "not found");
-                }
-                if (!locations.Any())
-                {
-                    return StatusCode(204, "no content");
-                }
-                return Ok(locations);
+                return StatusCode(404, "not found");
             }
-            catch (Exception ex)
+            if (!locations.Any())
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(204, "no content");
             }
+            return Ok(locations);
         }
-        // POST:
-        [HttpPost]
-        public async Task<ActionResult<int>> addNewLocation([FromBody] PostLocationDTO newLocation)
+        catch (Exception ex)
         {
-            if (newLocation == null)
-                return StatusCode(400, "bad request");
-            try
-            {
-                return await _LocationService.addNewLocation(newLocation);
-            }
-            catch (Exception ex)
-            {
-               return StatusCode(500, ex.Message);
-            }
+            return StatusCode(500, ex.Message);
         }
+    }
 
+    // GET:
+    [HttpPost("filter")]
+    public async Task<ActionResult<List<Location>>> getLocationsByLocationSaerch([FromBody] LocationSearch locationSearch)
+    {
+        if (locationSearch == null)
+            return StatusCode(400, "bad request");
+        try
+        {
+            List<Location> locations = await _LocationService.getLocationsByLocationSaerch(locationSearch);
 
+            if (locations == null)
+            {
+                return StatusCode(404, "not found");
+            }
+            if (!locations.Any())
+            {
+                return StatusCode(204, "no content");
+            }
+            return Ok(locations);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+    // POST:
+    [HttpPost]
+    public async Task<ActionResult<int>> addNewLocation([FromBody] PostLocationDTO newLocation)
+    {
+        if (newLocation == null)
+            return StatusCode(400, "bad request");
+        try
+        {
+            return await _LocationService.addNewLocation(newLocation);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+    //delete a customer
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<bool>> Delete(int id)
+    {
+        if (id == null)
+            return StatusCode(400, "bad request");
+        try
+        {
+            return await _LocationService.deleteLocation(id);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
     }
 
 }
+
+
 

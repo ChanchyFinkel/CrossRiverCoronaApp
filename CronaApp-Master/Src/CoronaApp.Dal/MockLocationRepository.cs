@@ -96,5 +96,15 @@ namespace CoronaApp.Tests
         {
             throw new NotImplementedException();
         }
+
+        public Task deleteLocation(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<bool> ILocationRepository.deleteLocation(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

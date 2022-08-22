@@ -30,4 +30,12 @@ public class PatientRepository : IPatientRepository
             }
         }
     }
+
+    public async Task<Patient> getPatientById(string id)
+    {
+        using (var _CoronaAppDBContext = new CoronaAppDBContext())
+        {
+           return await _CoronaAppDBContext.Patients.FirstOrDefaultAsync(patient=>patient.Id==id);
+        }
+    }
 }

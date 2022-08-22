@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CoronaApp.Api
+namespace CoronaApp.Api.MiddleWare
 {
     // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
     public class EventHandlerMiddleWare
@@ -20,11 +20,11 @@ namespace CoronaApp.Api
             _logger = logger;
         }
 
-       /* public void OnGet()
-        {
-            Message = $"About page visited at {DateTime.UtcNow.ToLongTimeString()}";
-            _logger.LogInformation(Message);
-        }*/
+        /* public void OnGet()
+         {
+             Message = $"About page visited at {DateTime.UtcNow.ToLongTimeString()}";
+             _logger.LogInformation(Message);
+         }*/
         public async Task Invoke(HttpContext httpContext)
         {
             try
@@ -41,7 +41,7 @@ namespace CoronaApp.Api
                 if (httpContext.Response.StatusCode >= 400 && httpContext.Response.StatusCode < 500)
                     httpContext.Response.StatusCode = httpContext.Response.StatusCode;
                 else
-                httpContext.Response.StatusCode = 500;
+                    httpContext.Response.StatusCode = 500;
             }
         }
     }

@@ -57,7 +57,7 @@ namespace CoronaApp.Dal
         {
             using (var _CoronaAppDBContext = new CoronaAppDBContext())
             {
-               List<Location> locations = await _CoronaAppDBContext.Locations.Include(location=>location.Patient).Where(location => (DateTime.Now.Year - location.Patient.dateOfBirth.Year) >= locationSearch.Age).ToListAsync();
+               List<Location> locations = await _CoronaAppDBContext.Locations.Include(location=>location.Patient).Where(location => (DateTime.Now.Year - location.Patient.DateOfBirth.Year) >= locationSearch.Age).ToListAsync();
                 return locations;
                 /*   return await _CoronaAppDBContext.Locations.Where(location => ((DateTime.Now.Year - location.Patient.dateOfBirth.Year) != null && (DateTime.Now.Year - location.Patient.dateOfBirth.Year) == locationSearch.Age) ||
              (locationSearch.StartDate != null && locationSearch.EndDate != null && DateTime.Compare((DateTime)locationSearch.StartDate, location.StartDate) <= 0 && DateTime.Compare((DateTime)locationSearch.EndDate, location.EndDate) >= 0)
@@ -69,7 +69,7 @@ namespace CoronaApp.Dal
             using (var _CoronaAppDBContext = new CoronaAppDBContext())
             {
                 return  await _CoronaAppDBContext.Locations.Include(location => location.Patient).Where(location => (DateTime.Compare((DateTime)locationSearch.StartDate, location.StartDate) <= 0 && DateTime.Compare((DateTime)locationSearch.EndDate, location.EndDate) >= 0)
-                && (DateTime.Now.Year - location.Patient.dateOfBirth.Year) >= locationSearch.Age).ToListAsync();
+                && (DateTime.Now.Year - location.Patient.DateOfBirth.Year) >= locationSearch.Age).ToListAsync();
             }
         }
 
@@ -79,6 +79,25 @@ namespace CoronaApp.Dal
             {
                 return await _CoronaAppDBContext.Locations.Where(location => location.City.ToUpper().Contains(city.ToUpper())).ToListAsync();
             }
+        }
+
+        public async Task<bool> deleteLocation(int id)
+        {
+            using (var _CoronaAppDBContext = new CoronaAppDBContext())
+            {
+                try
+                {
+                    Location locationtoDelete = await _CoronaAppDBContext.Locations.FindAsync(id);
+                    _CoronaAppDBContext.Locations.Remove(locationtoDelete);
+                    await _CoronaAppDBContext.SaveChangesAsync();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    throw new DbUpdateException();
+                }
+            }
+            return false;
         }
     }
 }

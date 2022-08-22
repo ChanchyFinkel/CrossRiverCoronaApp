@@ -6,6 +6,8 @@ namespace CoronaApp.Dal
     public interface IPatientRepository
     {
         public Task<string> addNewPatient(Patient newPatient);
+       public Task<Patient> getPatientById(string id);
+
 
     }
 }

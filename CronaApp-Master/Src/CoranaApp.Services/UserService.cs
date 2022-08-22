@@ -28,7 +28,7 @@ public class UserService : IUserService
     }
     public async Task<UserDTO> login(UserLoginDTO userLogin)
     {
-        if (userLogin != null)
+       // if (userLogin != null)
 
         {
             User user = await _userRepository.login(userLogin.Name, userLogin.Password);
@@ -38,7 +38,7 @@ public class UserService : IUserService
             userDto.Token = await getToken(user);
             return userDto;
         }
-        return null;
+       // return null;
     }
 
     public async Task<UserDTO> signUp(UserLoginDTO newUser)
@@ -46,7 +46,6 @@ public class UserService : IUserService
         if (newUser != null)
         {
             User user = await _userRepository.signUp(newUser.Name, newUser.Password);
-
             UserDTO _newUser= _mapper.Map<UserDTO>(user);
             _newUser.Token = await getToken(user);
             return _newUser;
@@ -63,7 +62,7 @@ public class UserService : IUserService
             {
                         new Claim("UserId", user.Id.ToString()),
                         new Claim("UserName", user.Name),
-                        new Claim("Role","user")
+                        new Claim(ClaimTypes.Role, "user")
         }),
             Expires = DateTime.UtcNow.AddMinutes(30),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

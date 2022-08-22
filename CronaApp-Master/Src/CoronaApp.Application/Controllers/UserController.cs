@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace CoronaApp.Api.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "user")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -35,15 +35,13 @@ namespace CoronaApp.Api.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<UserDTO>> login([FromBody] UserLoginDTO userLogin)
         {
-            if (userLogin == null)
-                return StatusCode(400, "bad request");
             try
             {
                 UserDTO user = await _UserService.login(userLogin);
 
                 if (user == null)
                 {
-                    return StatusCode(204, "no such user");
+                    return StatusCode(401, "Username or Password is incorrect");
                 }
                 return Ok(user);
             }
@@ -57,16 +55,13 @@ namespace CoronaApp.Api.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<UserDTO>> signUp([FromBody] UserLoginDTO newUser)
         {
-
-            if (newUser == null)
-                return StatusCode(400, "bad request");
             try
             {
                 UserDTO user = await _UserService.signUp(newUser);
 
                 if (user == null)
                 {
-                    return StatusCode(204, "no such user");
+                    return StatusCode(401, "UserName already exist");
                 }
                 return Ok(user);
             }
